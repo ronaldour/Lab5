@@ -81,4 +81,11 @@ function editCourse(course) {
    courses[findPosition(course.id)] = course
 }
 
-module.exports = { getCourse, exist, getCourses, addCourse, editCourse }
+function deleteCourse(id) {
+   let position = findPosition(id)
+   if(position > -1) {
+      courses.splice(position, 1)
+   }
+}
+
+module.exports = { getCourse, exist, getCourses, addCourse, editCourse, deleteCourse }
