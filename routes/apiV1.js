@@ -24,11 +24,34 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  var course = req.body.course;
+  let course = req.body.course;
   
-  if(courses.addCourse(course)) {
-    res.writeHead(201, {'Content-Type': 'text/plain'});
-    res.write('Agregado')
+  if(!!course) {
+    if(courses.addCourse(course)) {
+      res.writeHead(201, {'Content-Type': 'text/plain'});
+      res.write('Agregado')
+    }
+  }
+  end()
+});
+
+router.put('/', function(req, res, next) {
+  let id = req.query.id
+  let course = req.body.course;
+  if(!!id) {
+    if(courses.exist(id)) {
+      courses.editCourse(course)
+      res.writeHead(204, {'Content-Type': 'text/plain'});
+      res.write('modificado')
+    }
+    else {
+      res.writeHead(404, {'Content-Type': 'text/plain'});
+      res.write("id not found")
+    }
+  }
+  else {
+    res.writeHead(400, {'Content-Type': 'text/plain'});
+    res.write('provide id')
   }
   res.end()
 });

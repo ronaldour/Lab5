@@ -77,4 +77,8 @@ function addCourse(course) {
    return true
 }
 
-module.exports = { getCourse, exist, getCourses, addCourse }
+function editCourse(course) {
+   courses[findPosition(course.id)] = course
+}
+
+module.exports = { getCourse, exist, getCourses, addCourse, editCourse }
