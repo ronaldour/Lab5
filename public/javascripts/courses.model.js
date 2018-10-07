@@ -1,4 +1,4 @@
-const Courses  = [
+var courses  = [
    {
       id: 0,
       name: 'PHP for dummies',
@@ -46,8 +46,35 @@ const Courses  = [
    }
 ]
 
-function getCourse() {
-   return Courses[0]
+function findPosition(id) {
+   for(let i = 0; i < courses.length; i++) {
+      if(courses[i].id == id) {
+         return i
+      }
+   }
+   return -1
 }
 
-module.exports = { getCourse }
+function exist(id) {
+   if(findPosition(id) === -1) {
+      return false
+   }
+   else {
+      return true
+   }
+}
+
+function getCourse(id) {
+   return courses[findPosition(id)]
+}
+
+function getCourses() {
+   return courses
+}
+
+function addCourse(course) {
+   courses.push(course)
+   return true
+}
+
+module.exports = { getCourse, exist, getCourses, addCourse }
