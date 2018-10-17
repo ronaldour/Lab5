@@ -7,71 +7,82 @@ router.get('/', function(req, res, next) {
   let id = req.query.id
 
   if(!!id) {
-    if(courses.exist(id)) {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.write(JSON.stringify(courses.getCourse(id)))
-    }
-    else {
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.write("id not found")
-    }
+    courses.getCourse(id, function(result) {
+      if(!!result) {
+        res.writeHead(200, {'Content-Type': 'text/plain'});
+        res.write(JSON.stringify(result))
+      }
+      else {
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.write("id not found")
+      }
+      res.end()
+    })
   }
   else {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.write(JSON.stringify(courses.getCourses()))
+    courses.getCourses(function(result) {
+      res.writeHead(200, {'Content-Type': 'text/plain'});
+      res.write(JSON.stringify(result))
+      res.end()
+    })
   }
-  res.end()
 });
 
 router.post('/', function(req, res, next) {
   let course = req.body.course;
   
   if(!!course) {
-    if(courses.addCourse(course)) {
-      res.writeHead(201, {'Content-Type': 'text/plain'});
-      res.write('Course added')
-    }
+    courses.addCourse(course, function(result) {
+      if(result) {
+        res.writeHead(201, {'Content-Type': 'text/plain'});
+        res.write('Course added')
+        res.end()
+      }
+    })
   }
-  res.end()
 });
 
 router.put('/', function(req, res, next) {
   let id = req.query.id
   let course = req.body.course;
   if(!!id) {
-    if(courses.exist(id)) {
-      courses.editCourse(course)
-      res.writeHead(204, {'Content-Type': 'text/plain'});
-    }
-    else {
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.write("id not found")
-    }
+    courses.editCourse(course, function(result) {
+      if(!!result) {
+        res.writeHead(204, {'Content-Type': 'text/plain'});
+      }
+      else {
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.write("id not found")
+      }
+      res.end()
+    })
   }
   else {
     res.writeHead(400, {'Content-Type': 'text/plain'});
     res.write('provide id')
+    res.end()
   }
-  res.end()
 });
 
 router.delete('/', function(req, res, next) {
   let id = req.query.id
   if(!!id) {
-    if(courses.exist(id)) {
-      courses.deleteCourse(id)
-      res.writeHead(204, {'Content-Type': 'text/plain'});
-    }
-    else {
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.write("id not found")
-    }
+    courses.deleteCourse(id, function(result) {
+      if(!!result) {
+        res.writeHead(204, {'Content-Type': 'text/plain'});
+      }
+      else {
+        res.writeHead(404, {'Content-Type': 'text/plain'});
+        res.write("id not found")
+      }
+      res.end()
+    })
   }
   else {
     res.writeHead(400, {'Content-Type': 'text/plain'});
     res.write('provide id')
+    res.end()
   }
-  res.end()
 });
 
 module.exports = router;

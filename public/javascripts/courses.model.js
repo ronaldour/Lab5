@@ -1,3 +1,9 @@
+const mongodb = require('mongodb')
+const assert = require('assert')
+
+const url = 'mongodb://localhost:27017'
+const dbName = 'learnHub'
+
 var courses  = [
    {
       id: 0,
@@ -64,27 +70,78 @@ function exist(id) {
    }
 }
 
-function getCourse(id) {
-   return courses[findPosition(id)]
+async function getCourse(id, callback) {
+   try {
+      let client = await mongodb.MongoClient.connect(url)
+      console.log("Connected correctly to server")
+      const db = client.db(dbName)
+
+      let result = await db.collection('courses').findOne({id: id})
+
+      callback(result)
+   }
+   catch (err) {
+      console.log(err.stack)
+   }
 }
 
-function getCourses() {
-   return courses
+async function getCourses(callback) {
+   try {
+      let client = await mongodb.MongoClient.connect(url)
+      console.log("Connected correctly to server")
+      const db = client.db(dbName)
+
+      let result = await db.collection('courses').find().limit(10).toArray()
+
+      callback(result)
+   }
+   catch (err) {
+      console.log(err.stack)
+   }
 }
 
-function addCourse(course) {
-   courses.push(course)
-   return true
+async function addCourse(course, callback) {
+   try {
+      let client = await mongodb.MongoClient.connect(url)
+      console.log("Connected correctly to server")
+      const db = client.db(dbName)
+
+      let result = await db.collection('courses').insertOne(course)
+
+      callback(result)
+   }
+   catch (err) {
+      console.log(err.stack)
+   }
 }
 
-function editCourse(course) {
-   courses[findPosition(course.id)] = course
+async function editCourse(course, callback) {
+   try {
+      let client = await mongodb.MongoClient.connect(url)
+      console.log("Connected correctly to server")
+      const db = client.db(dbName)
+
+      let result = await db.collection('courses').updateOne({id: course.id}, {$set: course})
+
+      callback(result)
+   }
+   catch (err) {
+      console.log(err.stack)
+   }
 }
 
-function deleteCourse(id) {
-   let position = findPosition(id)
-   if(position > -1) {
-      courses.splice(position, 1)
+async function deleteCourse(id) {
+   try {
+      let client = await mongodb.MongoClient.connect(url)
+      console.log("Connected correctly to server")
+      const db = client.db(dbName)
+
+      let result = await db.collection('courses').deleteOne({id: id})
+
+      callback(result)
+   }
+   catch (err) {
+      console.log(err.stack)
    }
 }
 
