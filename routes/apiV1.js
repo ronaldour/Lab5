@@ -2,86 +2,112 @@ var express = require('express');
 var courses = require('../public/javascripts/courses.model')
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  let id = req.query.id
+function validateCourse(course) {
+  let properties = ['name', 'mentor', 'price', 'releaseDate', 'level']
 
+  for (let prop of properties) {
+    let val = course[prop]
+    if (val === null || val === undefined) {
+      return false
+    }
+  }
+  return true
+}
+
+/* GET home page. */
+router.get('/:id?', function(req, res, next) {
+  let id = req.params.id
   if(!!id) {
-    courses.getCourse(id, function(result) {
+    courses.getCourse(id).then(result => {
       if(!!result) {
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.write(JSON.stringify(result))
+        res.status(200).json(result)
       }
       else {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write("id not found")
+        res.status(404).json({ error: 'id not found' })
       }
-      res.end()
     })
   }
   else {
-    courses.getCourses(function(result) {
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.write(JSON.stringify(result))
-      res.end()
+    courses.getCourses().then(result => {
+      if(!!result) {
+        res.status(200).json(result)
+      }
+      else {
+        res.status(200).json([])
+      }
     })
   }
 });
 
 router.post('/', function(req, res, next) {
+  let course = req.body.course
+
+  if(validateCourse(course)) {
+    let newCourse = {
+      name: course.name,
+      mentor: course.mentor,
+      price: course.price,
+      imageUrl: course.imageUrl,
+      releaseDate: course.releaseDate,
+      level: course.level
+    }
+    
+    courses.addCourse(newCourse).then(result => {
+      if(!!result) {
+        res.status(201).end()
+      }
+      else {
+        res.status(409).json({error: 'not created'})
+      }
+    })
+  }
+  else {
+    res.status(400).end()
+  }
+});
+
+router.put('/:id', function(req, res, next) {
+  let id = req.params.id
   let course = req.body.course;
-  
-  if(!!course) {
-    courses.addCourse(course, function(result) {
+
+  if(!!id && validateCourse(course)) {
+    let newCourse = {
+      name: course.name,
+      mentor: course.mentor,
+      price: course.price,
+      imageUrl: course.imageUrl,
+      releaseDate: course.releaseDate,
+      level: course.level
+    }
+    
+    courses.editCourse(id, newCourse).then(result => {
       if(result) {
-        res.writeHead(201, {'Content-Type': 'text/plain'});
-        res.write('Course added')
-        res.end()
-      }
-    })
-  }
-});
-
-router.put('/', function(req, res, next) {
-  let id = req.query.id
-  let course = req.body.course;
-  if(!!id) {
-    courses.editCourse(course, function(result) {
-      if(!!result) {
-        res.writeHead(204, {'Content-Type': 'text/plain'});
+        res.status(204).end()
       }
       else {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write("id not found")
+        res.status(409).json({ error: 'not updated' })
       }
-      res.end()
     })
   }
   else {
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write('provide id')
-    res.end()
+    res.status(400).end()
   }
 });
 
-router.delete('/', function(req, res, next) {
-  let id = req.query.id
+router.delete('/:id', function(req, res, next) {
+  let id = req.params.id
   if(!!id) {
-    courses.deleteCourse(id, function(result) {
+    courses.deleteCourse(id).then(result => {
       if(!!result) {
-        res.writeHead(204, {'Content-Type': 'text/plain'});
+        res.status(204).end()
       }
       else {
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write("id not found")
+        res.status(404).json({error: 'not deleted'})
       }
-      res.end()
     })
   }
   else {
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write('provide id')
-    res.end()
+    res.status(400).end()
   }
 });
 

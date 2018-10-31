@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require("body-parser");
+var cors = require('cors');
 
 var apiRouter = require('./routes/apiV1');
 
@@ -20,6 +21,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors({
+  origin: 'http://localhost:4200'
+}))
+app.set('etag', false)
 
 app.use('/api/v1/LearnHub', apiRouter);
 
@@ -36,7 +41,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.end("{error}")
 });
 
 module.exports = app;

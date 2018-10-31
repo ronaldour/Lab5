@@ -70,60 +70,58 @@ function exist(id) {
    }
 }
 
-async function getCourse(id, callback) {
+async function getCourse(id) {
    try {
       let client = await mongodb.MongoClient.connect(url)
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
-      let result = await db.collection('courses').findOne({id: id})
+      const result = await db.collection('courses').findOne({ _id: mongodb.ObjectID(id) })
 
-      callback(result)
+      return result
    }
    catch (err) {
       console.log(err.stack)
    }
 }
 
-async function getCourses(callback) {
+async function getCourses() {
    try {
       let client = await mongodb.MongoClient.connect(url)
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
-      let result = await db.collection('courses').find().limit(10).toArray()
-
-      callback(result)
+      return await db.collection('courses').find().limit(10).toArray()
    }
    catch (err) {
       console.log(err.stack)
    }
 }
 
-async function addCourse(course, callback) {
+async function addCourse(course) {
    try {
       let client = await mongodb.MongoClient.connect(url)
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
-      let result = await db.collection('courses').insertOne(course)
+      const result = await db.collection('courses').insertOne(course)
 
-      callback(result)
+      return result.insertedCount === 1
    }
    catch (err) {
       console.log(err.stack)
    }
 }
 
-async function editCourse(course, callback) {
+async function editCourse(id, course) {
    try {
       let client = await mongodb.MongoClient.connect(url)
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
-      let result = await db.collection('courses').updateOne({id: course.id}, {$set: course})
-
-      callback(result)
+      const result = await db.collection('courses').updateOne({_id: mongodb.ObjectID(id)}, {$set: course})
+      
+      return result.result.ok
    }
    catch (err) {
       console.log(err.stack)
@@ -136,9 +134,9 @@ async function deleteCourse(id) {
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
-      let result = await db.collection('courses').deleteOne({id: id})
+      let result = await db.collection('courses').deleteOne({_id: mongodb.ObjectID(id)})
 
-      callback(result)
+      return result.deletedCount === 1
    }
    catch (err) {
       console.log(err.stack)
