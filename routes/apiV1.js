@@ -1,5 +1,6 @@
 var express = require('express');
 var courses = require('../public/javascripts/courses.model')
+var cache = require('express-redis-cache')({ expire: 60 });
 var router = express.Router();
 
 function validateCourse(course) {
@@ -15,7 +16,7 @@ function validateCourse(course) {
 }
 
 /* GET home page. */
-router.get('/:id?', function(req, res, next) {
+router.get('/:id?', cache.route(), function(req, res, next) {
   let id = req.params.id
   if(!!id) {
     courses.getCourse(id).then(result => {
