@@ -1,7 +1,7 @@
 const mongodb = require('mongodb')
 const assert = require('assert')
 
-const url = 'mongodb://localhost:27017'
+const url = 'mongodb://mongodb:27017'
 const dbName = 'learnHub'
 
 var courses  = [

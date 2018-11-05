@@ -1,6 +1,6 @@
 var express = require('express');
 var courses = require('../public/javascripts/courses.model')
-var cache = require('express-redis-cache')({ expire: 60 });
+var cache = require('express-redis-cache')({ host: "redis", expire: 60 });
 var router = express.Router();
 
 function validateCourse(course) {
