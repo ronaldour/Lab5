@@ -1,11 +1,12 @@
-const mongodb = require('mongodb')
+const MongoClient = require('mongodb').MongoClient
 
 const url = "mongodb+srv://" + process.env.MONGO_USER + ":" + process.env.MONGO_PASSWORD + "@" + process.env.MONGO_ENDPOINT
 const dbName = 'learnHub'
 
 async function getCourse(id) {
+   const client = new MongoClient(url)
    try {
-      let client = await mongodb.MongoClient.connect(url)
+      await client.connect()
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
@@ -20,8 +21,9 @@ async function getCourse(id) {
 }
 
 async function getCourses() {
+   const client = new MongoClient(url)
    try {
-      let client = await mongodb.MongoClient.connect(url)
+      await client.connect()
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
@@ -36,8 +38,9 @@ async function getCourses() {
 }
 
 async function addCourse(course) {
+   const client = new MongoClient(url)
    try {
-      let client = await mongodb.MongoClient.connect(url)
+      await client.connect()
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
@@ -52,8 +55,9 @@ async function addCourse(course) {
 }
 
 async function editCourse(id, course) {
+   const client = new MongoClient(url)
    try {
-      let client = await mongodb.MongoClient.connect(url)
+      await client.connect()
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
@@ -68,8 +72,9 @@ async function editCourse(id, course) {
 }
 
 async function deleteCourse(id) {
+   const client = new MongoClient(url)
    try {
-      let client = await mongodb.MongoClient.connect(url)
+      await client.connect()
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
