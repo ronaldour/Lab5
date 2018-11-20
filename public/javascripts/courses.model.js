@@ -1,7 +1,6 @@
 const mongodb = require('mongodb')
-const assert = require('assert')
 
-const url = 'mongodb://mongodb:27017'
+const url = "mongodb+srv://" + process.env.MONGO_USER + ":" + process.env.MONGO_PASSWORD + "@" + process.env.MONGO_ENDPOINT
 const dbName = 'learnHub'
 
 async function getCourse(id) {
@@ -12,6 +11,7 @@ async function getCourse(id) {
 
       const result = await db.collection('courses').findOne({ _id: mongodb.ObjectID(id) })
 
+      client.close()
       return result
    }
    catch (err) {
@@ -25,7 +25,10 @@ async function getCourses() {
       console.log("Connected correctly to server")
       const db = client.db(dbName)
 
-      return await db.collection('courses').find().limit(10).toArray()
+      const result = await db.collection('courses').find().limit(10).toArray()
+      
+      client.close()
+      return result
    }
    catch (err) {
       console.log(err.stack)
@@ -39,7 +42,8 @@ async function addCourse(course) {
       const db = client.db(dbName)
 
       const result = await db.collection('courses').insertOne(course)
-
+      
+      client.close()
       return result.insertedCount === 1
    }
    catch (err) {
@@ -55,6 +59,7 @@ async function editCourse(id, course) {
 
       const result = await db.collection('courses').updateOne({_id: mongodb.ObjectID(id)}, {$set: course})
       
+      client.close()
       return result.result.ok
    }
    catch (err) {
@@ -70,6 +75,7 @@ async function deleteCourse(id) {
 
       let result = await db.collection('courses').deleteOne({_id: mongodb.ObjectID(id)})
 
+      client.close()
       return result.deletedCount === 1
    }
    catch (err) {

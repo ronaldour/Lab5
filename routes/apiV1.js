@@ -1,6 +1,6 @@
 var express = require('express');
 var courses = require('../public/javascripts/courses.model')
-var cache = require('express-redis-cache')({ host: "redis", expire: 60 });
+var cache = require('express-redis-cache')({ host: process.env.REDIS_ENDPOINT, expire: 60 });
 var router = express.Router();
 
 function validateCourse(course) {
@@ -110,6 +110,10 @@ router.delete('/:id', function(req, res, next) {
   else {
     res.status(400).end()
   }
+});
+
+router.get('/check', cache.route(), function(req, res, next) {
+  res.status(200).json({status: 'ok'})
 });
 
 module.exports = router;
