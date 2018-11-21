@@ -15,6 +15,10 @@ function validateCourse(course) {
   return true
 }
 
+router.get('/check', cache.route(), function(req, res, next) {
+  res.status(200).json({status: 'ok'})
+});
+
 /* GET home page. */
 router.get('/:id?', cache.route(), function(req, res, next) {
   let id = req.params.id
@@ -34,7 +38,7 @@ router.get('/:id?', cache.route(), function(req, res, next) {
         res.status(200).json(result)
       }
       else {
-        res.status(200).json([])
+        res.status(500).json({error: "Error getting the data"})
       }
     })
   }
@@ -110,10 +114,6 @@ router.delete('/:id', function(req, res, next) {
   else {
     res.status(400).end()
   }
-});
-
-router.get('/check', cache.route(), function(req, res, next) {
-  res.status(200).json({status: 'ok'})
 });
 
 module.exports = router;
